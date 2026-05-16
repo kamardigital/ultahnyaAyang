@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Untuk Kamu 💕</title>
+
+  <!-- Google Fonts: Playfair Display (elegan) + Lato (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&family=Dancing+Script:wght@600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============================================================
+       CSS VARIABLES — Edit warna di sini untuk kostumisasi mudah
+       ============================================================ */
+    :root {
+      --pink-deep:  #8b2252;
+      --pink-mid:   #c0527a;
+      --pink-light: #f7c5d5;
+      --gold:       #d4a843;
+      --gold-light: #f5e6b2;
+      --cream:      #fff8f0;
+      --dark:       #2a0a14;
+      --white:      #ffffff;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* nav dihapus */
+
+    /* ============================================================
+       SECTION WRAPPER
+       ============================================================ */
+    .section {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 20px 40px;
+    }
+
+    .section.active { display: block; } /* section yang aktif tampil */
+
+    /* ============================================================
+       ===== HALAMAN 1: LOVE LETTER =====
+       ============================================================ */
+    #page-letter {
+      background: linear-gradient(160deg, #fff0f5 0%, #ffe8f0 50%, #ffd6e7 100%);
+      position: relative;
+    }
+
+    /* Dekorasi bunga & petal latar belakang */
+    #page-letter::before {
+      content: '🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      font-size: 2rem;
+      letter-spacing: 8px;
+      opacity: 0.08;
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .letter-container {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .letter-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--pink-deep);
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 var(--pink-light);
+    }
+
+    .letter-subtitle {
+      font-size: 0.85rem;
+      color: var(--pink-mid);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    /* Amplop */
+    .envelope-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .envelope {
+      background: linear-gradient(135deg, var(--gold-light), #fce8b0);
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      padding: 32px 24px 24px;
+      box-shadow: 0 8px 32px rgba(212,168,67,0.25), 0 2px 8px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Segel amplop */
+    .envelope::before {
+      content: '💌';
+      position: absolute;
+      top: -1px; left: 50%; transform: translateX(-50%);
+      font-size: 2rem;
+      background: var(--gold-light);
+      padding: 0 12px;
+    }
+
+    /* Area huruf-huruf yang jatuh */
+    #letter-chars-area {
+      min-height: 200px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Setiap karakter yang bisa diklik */
+    .letter-char {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: var(--dark);
+      line-height: 1.7;
+      cursor: pointer;
+      position: relative;
+      transform: translateY(-60px) rotate(var(--rot));
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1),
+                  opacity 0.5s ease,
+                  color 0.2s;
+      user-select: none;
+    }
+
+    /* Karakter muncul saat animasi jatuh */
+    .letter-char.fallen {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+
+    /* Karakter sudah diklik */
+    .letter-char.clicked {
+      color: var(--pink-deep);
+      cursor: default;
+      animation: pulse-char 0.4s ease;
+    }
+
+    /* Spasi agar tidak rapat */
+    .letter-space { display: inline-block; width: 0.3em; }
+
+    @keyframes pulse-char {
+      0%   { transform: scale(1.4); }
+      50%  { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+
+    /* Pesan progress mengumpulkan huruf */
+    #click-hint {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--pink-mid);
+      font-style: italic;
+      transition: opacity 0.5s;
+    }
+
+    /* Tombol reveal surat lengkap */
+    #btn-reveal {
+      display: none; /* muncul setelah semua huruf diklik */
+      margin: 20px auto 0;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink-mid));
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(139,34,82,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #btn-reveal:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(139,34,82,0.5); }
+
+    /* Surat lengkap (disembunyikan dulu) */
+    #full-letter {
+      display: none;
+      margin-top: 24px;
+      text-align: left;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+      line-height: 2;
+      color: var(--dark);
+      padding: 20px;
+      border-top: 1px dashed var(--gold);
+      animation: fadeInLetter 1.2s ease forwards;
+    }
+
+    @keyframes fadeInLetter {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #full-letter p { margin-bottom: 16px; }
+    #full-letter .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--pink-deep);
+      text-align: right;
+      margin-top: 8px;
+    }
+
+    /* ============================================================
+       ===== HALAMAN 2: GALERI FOTO =====
+       ============================================================ */
+    #page-gallery {
+      background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+      min-height: 100vh;
+    }
+
+    .gallery-container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .gallery-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: var(--gold);
+      margin-bottom: 6px;
+      text-shadow: 0 0 20px rgba(212,168,67,0.5);
+    }
+
+    .gallery-subtitle {
+      font-size: 0.8rem;
+      color: var(--pink-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0.7;
+    }
+
+    /* Frame foto */
+    .photo-frame {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 28px;
+      perspective: 1000px;
+    }
+
+    .photo-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 3px var(--gold);
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.4,0.2,0.2,1);
+      background: #0d0020;
+    }
+
+    .photo-card.flipping { transform: rotateY(90deg); }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Overlay label "KEJUTAN!" */
+    .photo-card .photo-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      padding: 20px 16px 12px;
+      text-align: center;
+    }
+
+    /* Indikator foto (titik-titik) */
+    .photo-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .photo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: all 0.3s;
+      border: 1px solid var(--gold);
+    }
+
+    .photo-dot.active { background: var(--gold); transform: scale(1.4); }
+
+    /* Tombol galeri */
+    .gallery-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-gallery {
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid var(--gold);
+    }
+
+    .btn-gallery.primary {
+      background: var(--gold);
+      color: var(--dark);
+    }
+    .btn-gallery.primary:hover {
+      background: #f0c050;
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(212,168,67,0.5);
+    }
+
+    .btn-gallery.secondary {
+      background: transparent;
+      color: var(--gold-light);
+    }
+    .btn-gallery.secondary:hover {
+      background: rgba(212,168,67,0.1);
+    }
+
+    /* Caption romantis setelah foto asli */
+    #romantic-caption {
+      display: none;
+      margin-top: 16px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--pink-light);
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.8s;
+    }
+
+    /* ============================================================
+       ===== HALAMAN 3: QUIZ =====
+       ============================================================ */
+    #page-quiz {
+      background: linear-gradient(170deg, #fff0f5 0%, #ffe8f0 40%, #fff8f0 100%);
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .quiz-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: var(--pink-deep);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .quiz-subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--pink-mid);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    /* Card soal */
+    .quiz-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 8px 32px rgba(139,34,82,0.12);
+      border: 1px solid var(--pink-light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--pink-deep), var(--gold));
+    }
+
+    /* Progress bar soal */
+    .quiz-progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-progress-dot {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--pink-light);
+      transition: background 0.4s;
+    }
+    .quiz-progress-dot.done { background: var(--gold); }
+    .quiz-progress-dot.current { background: var(--pink-deep); }
+
+    .quiz-number {
+      font-size: 0.75rem;
+      color: var(--pink-mid);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .quiz-question {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      color: var(--dark);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Pilihan jawaban */
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      padding: 12px 20px;
+      border: 2px solid var(--pink-light);
+      border-radius: 12px;
+      background: transparent;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem;
+      color: var(--dark);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s;
+    }
+
+    .quiz-option:hover:not(:disabled) {
+      border-color: var(--pink-mid);
+      background: var(--pink-light);
+      transform: translateX(4px);
+    }
+
+    .quiz-option.correct {
+      border-color: #4caf50;
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .quiz-option.wrong {
+      border-color: #f44336;
+      background: #ffebee;
+      color: #b71c1c;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-8px); }
+      75%      { transform: translateX(8px); }
+    }
+
+    /* Feedback animasi */
+    #quiz-feedback {
+      text-align: center;
+      min-height: 80px;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .feedback-emoji {
+      font-size: 3rem;
+      animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      display: inline-block;
+    }
+
+    @keyframes bounceIn {
+      0%   { transform: scale(0) rotate(-20deg); }
+      60%  { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    .feedback-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--pink-deep);
+      animation: fadeInLetter 0.5s ease;
+    }
+
+    /* Tombol next soal */
+    #btn-next-q {
+      display: none;
+      margin: 16px auto 0;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink-mid));
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(139,34,82,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #btn-next-q:hover { transform: scale(1.05); }
+
+    /* Layar skor akhir */
+    #quiz-result {
+      display: none;
+      text-align: center;
+      padding: 32px 16px;
+      animation: fadeInLetter 0.8s ease;
+    }
+
+    .result-emoji { font-size: 5rem; display: block; margin-bottom: 12px; }
+    .result-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: var(--pink-deep);
+      margin-bottom: 8px;
+    }
+    .result-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+
+    /* Confetti hearts */
+    .hearts-rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .heart-particle {
+      position: absolute;
+      top: -40px;
+      font-size: 1.5rem;
+      animation: heartFall linear forwards;
+    }
+    @keyframes heartFall {
+      to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ============================================================
+       TOMBOL RESET / MAIN PAGE
+       ============================================================ */
+    .btn-reset {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 28px;
+      border: 2px solid var(--pink-deep);
+      border-radius: 40px;
+      background: transparent;
+      color: var(--pink-deep);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-reset:hover { background: var(--pink-deep); color: white; }
+
+    /* ============================================================
+       HALAMAN PEMBUKA (SPLASH)
+       ============================================================ */
+    #page-splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 40%, #8b2252 0%, #4a0d2e 60%, #1a0510 100%);
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .splash-hearts {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: splashPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes splashPulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.1); }
+    }
+
+    .splash-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 8vw, 4rem);
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(212,168,67,0.6);
+      margin-bottom: 10px;
+    }
+
+    .splash-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--pink-light);
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      margin-bottom: 40px;
+      opacity: 0.85;
+    }
+
+    .splash-btn {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--gold), #f0c050);
+      color: var(--dark);
+      border: none;
+      border-radius: 50px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(212,168,67,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .splash-btn:hover { transform: scale(1.06); box-shadow: 0 12px 40px rgba(212,168,67,0.6); }
+
+    /* ============================================================
+       RESPONSIVE TWEAKS
+       ============================================================ */
+    @media (max-width: 480px) {
+      nav button { padding: 6px 12px; font-size: 0.72rem; }
+      .quiz-card  { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     SPLASH PAGE — Halaman pembuka romantis
+     ============================================================ -->
+<section id="page-splash" class="section active">
+  <div class="splash-hearts">💕</div>
+  <h1 class="splash-title">Selamat Ulang Tahun</h1>
+  <!-- ✏️ EDIT: Ganti nama pacar kamu di sini -->
+  <p class="splash-sub">Meiya Putri Aisty Anam<br>Ndutkuu Tersayang<br>🌹</p>
+  <button class="splash-btn" onclick="openFromSplash()">
+    Buka Dong ✨
+  </button>
+</section>
+
+<!-- Nav dihapus: navigasi kini lewat tombol di setiap section -->
+
+<!-- ============================================================
+     HALAMAN 1: LOVE LETTER
+     ============================================================ -->
+<section id="page-letter" class="section">
+  <div class="letter-container">
+    <h2 class="letter-title">Surat Untukmu 💌</h2>
+    <p class="letter-subtitle">KLIK NYA SATU-SATU YAH BIAR ADA KERJAAN KAMU NYA HEHE</p>
+
+    <div class="envelope-wrapper">
+      <div class="envelope">
+        <!-- Huruf-huruf akan di-generate oleh JavaScript di sini -->
+        <div id="letter-chars-area"></div>
+
+        <!-- Hint dan progress -->
+        <p id="click-hint">Klik huruf nya sayang 🌸</p>
+
+        <!-- Tombol muncul setelah semua huruf diklik -->
+        <button id="btn-reveal" onclick="revealFullLetter()">
+          Buka Suratnya! 💝
+        </button>
+
+        <!-- Surat lengkap tersembunyi -->
+        <div id="full-letter">
+          <!-- ✏️ EDIT: Ganti isi surat di sini sesuai kebutuhanmu -->
+          <p>Selamat Ulang Tahun yg Ke-21 Sayangkuu,</p>
+          <p>
+            Hari ini, di hari ulang tahunmu yang istimewa, aku ingin kamu tahu bahwa
+            kamu adalah alasan terbesar kenapa aku tersenyum setiap pagi.
+            Setiap momen bersamamu adalah hadiah yang tidak ternilai.
+          </p>
+          <p>
+            Kamu bukan hanya pacarku, kamu adalah sahabat terbaikku, tempatku pulang,
+            dan cahaya di hari-hari gelapku. Terima kasih sudah mencintaiku apa adanya.
+          </p>
+          <p>
+            Di hari ulang tahunmu ini, aku berharap semua impianmu terwujud dan
+            kebahagiaan selalu menemanimu. Aku mencintaimu kemarin, hari ini,
+            dan selamanya.
+          </p>
+          <p>Maaf yah sayang di ulang tahun ini juga aku belum bisa ngasih kamu apa2, ya mungkin disisi lain aku merasa gagal jadi cowo. Tapi aku pastiin setelah badai ini berlalu kamu orang pertama yg bakal rasain nikmat nya sayangku, aku janji. Aku cuma pengen kamu tau, aku sayang kamu banget, dan aku bakal selalu ada buat kamu, di setiap langkah perjalanan kita. 💕
+          </p>
+          <p class="signature">Dengan segala cintaku, — Abang Jek 😊</p>
+          <!-- Tombol lanjut ke galeri, muncul bersama surat lengkap -->
+          <div style="text-align:center; margin-top: 24px;">
+            <button class="btn-reset" style="background:var(--pink-deep);color:white;border-color:var(--pink-deep);" onclick="goToPage('gallery')">
+              Lanjut Ke Gallery Yukks ➜
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HALAMAN 2: GALERI FOTO
+     ============================================================ -->
+<section id="page-gallery" class="section">
+  <div class="gallery-container">
+    <h2 class="gallery-title">Galeri Kita</h2>
+    <p class="gallery-subtitle">TENTANG KENANGAN KITA HEHE...</p>
+
+    <div class="photo-frame">
+      <div class="photo-card" id="photo-card">
+        <!-- Foto akan berganti lewat JavaScript -->
+        <img id="gallery-img" src="" alt="Foto" />
+        <div class="photo-label" id="photo-label">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Titik indikator -->
+    <div class="photo-dots" id="photo-dots"></div>
+
+    <!-- Caption muncul setelah foto romantis -->
+    <p id="romantic-caption"></p>
+
+    <div class="gallery-buttons">
+      <button class="btn-gallery primary" id="btn-next-photo" onclick="nextPhoto()">
+        Next ➜
+      </button>
+      <button class="btn-gallery secondary" id="btn-to-quiz" style="display:none" onclick="goToPage('quiz')">
+        Main Quiz Yukss ➜
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HALAMAN 3: QUIZ
+     ============================================================ -->
+<section id="page-quiz" class="section">
+  <div class="quiz-container">
+    <h2 class="quiz-title">Quiz Hubungan Kita 💘</h2>
+    <p class="quiz-subtitle">Seberapa kenal kamu sama kita?</p>
+
+    <!-- Card Soal -->
+    <div class="quiz-card" id="quiz-card">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <p class="quiz-number" id="quiz-number"></p>
+      <p class="quiz-question" id="quiz-question"></p>
+      <div class="quiz-options" id="quiz-options"></div>
+
+      <!-- Feedback benar/salah -->
+      <div id="quiz-feedback"></div>
+
+      <!-- Tombol lanjut soal -->
+      <button id="btn-next-q" onclick="nextQuestion()">Lanjut ➜</button>
+    </div>
+
+    <!-- Hasil akhir quiz -->
+    <div id="quiz-result">
+      <span class="result-emoji" id="result-emoji"></span>
+      <h3 class="result-title" id="result-title"></h3>
+      <p class="result-score" id="result-score"></p>
+      <button class="btn-reset" onclick="resetQuiz()">Main Lagi 🔄</button>
+    </div>
+    <!-- ✏️ UCAPAN PENUTUP — edit teks di sini sesuai keinginan -->
+    <div id="closing-message" style="display:none; margin-top: 32px; padding: 24px;
+       background: linear-gradient(135deg, #fff0f5, #ffe8f0);
+       border: 2px solid var(--pink-light); border-radius: 20px;
+       animation: fadeInLetter 1s ease forwards;">
+
+      <p style="font-size: 2.5rem; margin-bottom: 12px;">🎂✨🎉</p>
+
+      <p style="font-family: 'Dancing Script', cursive; font-size: 1.8rem;
+              color: var(--pink-deep); margin-bottom: 16px;">
+      Selamat Ulang Tahun, Sayangku!
+      </p>
+
+      <p style="font-family: 'Playfair Display', serif; font-style: italic;
+              font-size: 1rem; color: var(--dark); line-height: 1.9; margin-bottom: 16px;">
+      <!-- ✏️ Ganti teks ucapan di sini -->
+      Semoga di hari istimewamu ini, semua doa dan harapanmu terkabul.
+      Semoga kamu selalu sehat, bahagia, dan dikelilingi orang-orang
+      yang menyayangimu — terutama aku. 💕
+      </p>
+
+      <p style="font-family: 'Playfair Display', serif; font-style: italic;
+              font-size: 1rem; color: var(--dark); line-height: 1.9; margin-bottom: 20px;">
+      Terima kasih sudah hadir di hidupku dan menjadi bagian dari
+      setiap momen indahku. Aku mencintaimu kemarin, hari ini,
+      dan selamanya. 🌹
+      </p>
+
+      <p style="font-family: 'Dancing Script', cursive; font-size: 1.5rem;
+              color: var(--gold);">
+      — Dengan cinta yang tak terhingga 💛
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Container untuk confetti/heart rain -->
+<div class="hearts-rain" id="hearts-rain"></div>
+
+
+<script>
+// ============================================================
+// JAVASCRIPT UTAMA
+// ============================================================
+
+// ============================================================
+// NAVIGASI ANTAR HALAMAN (tanpa nav bar)
+// ============================================================
+function openFromSplash() {
+  // Hapus splash sepenuhnya dari DOM agar tidak bisa kembali
+  const splash = document.getElementById('page-splash');
+  splash.style.transition = 'opacity 0.6s ease';
+  splash.style.opacity = '0';
+  setTimeout(() => {
+    splash.remove();
+    goToPage('letter');
+  }, 600);
+}
+
+function goToPage(page) {
+  // Sembunyikan semua section
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+  // Aktifkan section yang diminta
+  document.getElementById('page-' + page).classList.add('active');
+
+  // Inisialisasi halaman jika belum
+  if (page === 'letter'  && !letterInitialized) initLetter();
+  if (page === 'gallery' && !galleryInitialized) initGallery();
+  if (page === 'quiz'    && !quizInitialized) initQuiz();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// HALAMAN 1: LOVE LETTER — LOGIKA
+// ============================================================
+let letterInitialized = false;
+let clickedCount = 0;
+let totalChars = 0;
+
+// ✏️ EDIT: Ganti teks preview surat di sini (yang huruf-hurufnya jatuh)
+// Ini adalah teks singkat yang huruf-hurufnya bisa diklik
+const previewText = "Selamat Ulang Tahun Ndut Aku Cinta Kamu Selamanya Terus Klik Sampe Pegel yaa Hehe";
+
+function initLetter() {
+  letterInitialized = true;
+  const area = document.getElementById('letter-chars-area');
+  area.innerHTML = '';
+  clickedCount = 0;
+
+  // Pisahkan teks menjadi kata-kata, lalu karakter
+  const words = previewText.split(' ');
+  totalChars = previewText.replace(/ /g, '').length;
+
+  words.forEach((word, wi) => {
+    // Buat span untuk setiap huruf
+    [...word].forEach((char, ci) => {
+      const span = document.createElement('span');
+      span.className = 'letter-char';
+      span.textContent = char;
+      // Rotasi acak agar terlihat "jatuh berantakan"
+      const rot = (Math.random() * 30 - 15).toFixed(1) + 'deg';
+      span.style.setProperty('--rot', rot);
+      span.dataset.clicked = 'false';
+
+      // Animasi jatuh dengan delay berbeda tiap huruf
+      const delay = (wi * 0.15 + ci * 0.06 + Math.random() * 0.1);
+      setTimeout(() => span.classList.add('fallen'), delay * 1000);
+
+      // Event klik per huruf
+      span.addEventListener('click', function() {
+        if (this.dataset.clicked === 'true') return; // sudah diklik
+        this.dataset.clicked = 'true';
+        this.classList.add('clicked');
+        clickedCount++;
+        updateLetterProgress();
+      });
+
+      area.appendChild(span);
+    });
+
+    // Spasi antar kata
+    if (wi < words.length - 1) {
+      const space = document.createElement('span');
+      space.className = 'letter-space';
+      area.appendChild(space);
+    }
+  });
+}
+
+function updateLetterProgress() {
+  const hint = document.getElementById('click-hint');
+  const remaining = totalChars - clickedCount;
+
+  if (remaining > 0) {
+    hint.textContent = `${clickedCount}/${totalChars} Ayo Semangat Sayang... terus klik! 💕`;
+  } else {
+    // Semua huruf sudah diklik
+    hint.textContent = 'Semua huruf terkumpul! 🎉';
+    document.getElementById('btn-reveal').style.display = 'inline-block';
+  }
+}
+
+function revealFullLetter() {
+  document.getElementById('btn-reveal').style.display = 'none';
+  document.getElementById('full-letter').style.display = 'block';
+  // Efek hujan hati kecil
+  spawnHearts(10, 2000);
+}
+
+// ============================================================
+// HALAMAN 2: GALERI FOTO — LOGIKA
+// ============================================================
+let galleryInitialized = false;
+let currentPhotoIndex = 0;
+let galleryPhase = 'funny'; // 'funny' atau 'romantic'
+
+/*
+ * ✏️ EDIT FOTO DI SINI:
+ * - "funny": foto random/meme/kucing (placeholder sementara)
+ * - "romantic": foto kenangan kalian
+ *
+ * Untuk foto kalian, upload ke folder yang sama dengan index.html,
+ * lalu ganti URL di bawah dengan nama file gambar kamu.
+ * Contoh: src: 'foto-kita-1.jpg', label: 'Kenangan Pertama 💕'
+ *
+ * Untuk sekarang, menggunakan foto placeholder dari internet.
+ */
+const photos = {
+  funny: [
+    {
+      src: 'random1.jpg',
+      label: 'Masih Malu2 Biasalah😂'
+    },
+    {
+      src: 'random2.jpg',
+      label: 'AWWW Itu Pipi Apa Bakpau😘'
+    },
+    {
+      src: 'random3.jpg',
+      label: 'IYAAKHHH❤️'
+    }
+  ],
+  romantic: [
+    // ✏️ Ganti src dengan path foto kamu! Contoh: 'foto1.jpg'
+    {
+      src: 'kita1.jpeg',
+      label: 'Jujur Ini Lucuu 😍',
+    },
+    {
+      src: 'kita2.jpg',
+      label: 'Ini Pas Kita Di Rumah Yaa Hehe 💑',
+    },
+    {
+      src: 'kita3.jpg',
+      label: 'Dan Semuanya Dirangkum Di 1 Foto Ini ❤️',
+    }
+  ]
+};
+
+function initGallery() {
+  galleryInitialized = true;
+  galleryPhase = 'funny';
+  currentPhotoIndex = 0;
+  renderGallery();
+}
+
+function renderGallery() {
+  const allPhotos = galleryPhase === 'funny' ? photos.funny : photos.romantic;
+  const photo = allPhotos[currentPhotoIndex];
+  const card  = document.getElementById('photo-card');
+  const img   = document.getElementById('gallery-img');
+  const label = document.getElementById('photo-label');
+  const dots  = document.getElementById('photo-dots');
+  const btn   = document.getElementById('btn-next-photo');
+  const captionEl = document.getElementById('romantic-caption');
+
+  // Animasi flip saat ganti foto
+  card.classList.add('flipping');
+  setTimeout(() => {
+    img.src = photo.src;
+    label.textContent = photo.label;
+    card.classList.remove('flipping');
+
+    // Tampilkan caption romantis jika sudah di fase romantic
+    if (galleryPhase === 'romantic' && photo.caption) {
+      captionEl.style.display = 'block';
+      captionEl.textContent = photo.caption;
+      setTimeout(() => captionEl.style.opacity = '1', 100);
+    } else {
+      captionEl.style.display = 'none';
+      captionEl.style.opacity = '0';
+    }
+  }, 400);
+
+  // Buat titik-titik indikator
+  dots.innerHTML = '';
+  allPhotos.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'photo-dot' + (i === currentPhotoIndex ? ' active' : '');
+    dots.appendChild(dot);
+  });
+
+  // Logika tombol Next
+  const isLast = currentPhotoIndex >= allPhotos.length - 1;
+  btn.disabled = false; // pastikan tombol selalu aktif
+  if (galleryPhase === 'funny') {
+    btn.textContent = isLast ? 'Lihat Kejutan! 💝' : 'Next ➜';
+  } else {
+    btn.textContent = isLast ? 'Selesai 💘' : 'Next ➜';
+  }
+}
+
+function nextPhoto() {
+  const allPhotos = galleryPhase === 'funny' ? photos.funny : photos.romantic;
+  const isLast = currentPhotoIndex >= allPhotos.length - 1;
+
+  if (galleryPhase === 'funny' && isLast) {
+    // Switch ke fase romantis!
+    galleryPhase = 'romantic';
+    currentPhotoIndex = 0;
+    spawnHearts(15, 3000);
+  } else if (!isLast) {
+    currentPhotoIndex++;
+  } else {
+    // Sudah foto terakhir di fase romantis — tampilkan tombol ke quiz
+    document.getElementById('btn-next-photo').style.display = 'none';
+    document.getElementById('btn-to-quiz').style.display = 'inline-block';
+    return;
+  }
+
+  renderGallery();
+}
+
+function resetGallery() {
+  galleryPhase = 'funny';
+  currentPhotoIndex = 0;
+  document.getElementById('btn-next-photo').style.display = 'inline-block';
+  document.getElementById('btn-to-quiz').style.display = 'none';
+  renderGallery();
+}
+
+// ============================================================
+// HALAMAN 3: QUIZ — LOGIKA
+// ============================================================
+let quizInitialized = false;
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+/*
+ * ✏️ EDIT SOAL QUIZ DI SINI:
+ * Ganti 'question', 'options', dan 'answer' sesuai kisah kalian!
+ * 'answer' = index jawaban benar (mulai dari 0)
+ */
+const questions = [
+  {
+    question: "Tanggal berapa kalian resmi jadian?",
+    options: ["14 Februari", "1 Januari", "17 Agustus", "21 Maret"],
+    answer: 1, // ✏️ Ganti dengan index jawaban yang benar
+    wrongMsg: "Bukan itu sayang, ingat-ingat lagi! 😅",
+    rightMsg:  "Yesss! Kamu ingat! Aku bangga! 🎉"
+  },
+  {
+    question: "Makanan pertama pas kita nge date?",
+    options: ["Mie Ayam", "Sushi", "Ayam Geprek", "Bubur Ayam"],
+    answer: 3, // ✏️ Ganti index
+    wrongMsg: "Aduh, itu bukan! Kamu kurang perhatian nih 😜",
+    rightMsg:  "Kamu hapal! Sayang banget sama kamu! 💕"
+  },
+  {
+    question: "Dulu kita pernah neduh dimana sih?",
+    options: ["Mall", "Bengkel", "Warung", "Got"],
+    answer: 2, // ✏️ Ganti index
+    wrongMsg: "Coba ingat-ingat lagi... 🙈",
+    rightMsg:  "Ingat dong! Seru banget kan waktu itu? 😂"
+  },
+  {
+    question: "Sebutan sayang aku ke kamu apa sih?",
+    options: ["'Ayy'", "'Bebb'", "'Bubub'", "'Seng'"],
+    answer: 0, // ✏️ Ganti index
+    wrongMsg: "Itu bukan! Yang paling sering itu lho 😂",
+    rightMsg:  "Itu aku selalu bilang dan selalu dari hati! ❤️"
+  },
+  {
+    question: "Kita kenal tuh dari mana yah?",
+    options: ["Kafe", "Sawah", "Litmatch", "Instagram"],
+    answer: 2, // ✏️ Ganti index
+    wrongMsg: "Kurang ingat nih, ayo dipikir 🤔",
+    rightMsg:  "Pertemuan itu yang paling berkesan buatku! ✨"
+  }
+];
+
+function initQuiz() {
+  quizInitialized = true;
+  currentQ = 0;
+  score = 0;
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-card').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  document.getElementById('quiz-number').textContent = `Soal ${currentQ + 1} dari ${questions.length}`;
+  document.getElementById('quiz-question').textContent = q.question;
+  document.getElementById('quiz-feedback').innerHTML = '';
+  document.getElementById('btn-next-q').style.display = 'none';
+
+  // Progress dots
+  const prog = document.getElementById('quiz-progress');
+  prog.innerHTML = '';
+  questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'quiz-progress-dot' + (i < currentQ ? ' done' : i === currentQ ? ' current' : '');
+    prog.appendChild(dot);
+  });
+
+  // Opsi jawaban
+  const optionsEl = document.getElementById('quiz-options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => checkAnswer(i, btn));
+    optionsEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(selectedIndex, btn) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentQ];
+  const allOptions = document.querySelectorAll('.quiz-option');
+  allOptions.forEach(b => b.disabled = true); // disable semua opsi
+
+  const feedbackEl = document.getElementById('quiz-feedback');
+
+  if (selectedIndex === q.answer) {
+    // BENAR
+    score++;
+    btn.classList.add('correct');
+    feedbackEl.innerHTML = `
+      <span class="feedback-emoji">💖</span>
+      <span class="feedback-text">${q.rightMsg}</span>
+    `;
+    spawnHearts(8, 1500);
+  } else {
+    // SALAH
+    btn.classList.add('wrong');
+    // Tandai jawaban benar
+    allOptions[q.answer].classList.add('correct');
+    feedbackEl.innerHTML = `
+      <span class="feedback-emoji">😂💔</span>
+      <span class="feedback-text">${q.wrongMsg}</span>
+    `;
+  }
+
+  // Tampilkan tombol lanjut
+  const btnNext = document.getElementById('btn-next-q');
+  btnNext.style.display = 'inline-block';
+  btnNext.textContent = currentQ < questions.length - 1 ? 'Lanjut ➜' : 'Lihat Hasil 🎊';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-card').style.display = 'none';
+  const resultEl = document.getElementById('quiz-result');
+  resultEl.style.display = 'block';
+
+  const pct = score / questions.length;
+  let emoji, title, msg;
+
+  if (pct === 1) {
+    emoji = '🏆💕'; title = 'Sempurna!';
+    msg = `Skor ${score}/${questions.length} — Kamu kenal aku luar dalam! Aku cinta kamu! 💑`;
+    spawnHearts(30, 4000);
+  } else if (pct >= 0.6) {
+    emoji = '😊❤️'; title = 'Lumayan Romantis!';
+    msg = `Skor ${score}/${questions.length} — Cukup tahu tentang kita, tapi masih perlu belajar! 😘`;
+    spawnHearts(15, 3000);
+  } else {
+    emoji = '😅💔'; title = 'Kurang Perhatian Nih!';
+    msg = `Skor ${score}/${questions.length} — Kita harus lebih sering ngobrol ya sayang! 😂`;
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = msg;
+
+  // ✏️ Ucapan penutup muncul setelah 1.5 detik
+  setTimeout(() => {
+    document.getElementById('closing-message').style.display = 'block';
+  }, 1500);
+}
+
+function resetQuiz() {
+  quizInitialized = false;
+  initQuiz();
+}
+
+// ============================================================
+// EFEK HUJAN HATI
+// Memanggil sejumlah hati yang jatuh dari atas layar
+// ============================================================
+function spawnHearts(count, durationMs) {
+  const container = document.getElementById('hearts-rain');
+  const emojis = ['❤️', '💕', '💖', '💗', '🌸', '✨'];
+
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const heart = document.createElement('span');
+      heart.className = 'heart-particle';
+      heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+      const fallDur = (2 + Math.random() * 2).toFixed(1) + 's';
+      heart.style.animationDuration = fallDur;
+      container.appendChild(heart);
+      // Hapus elemen setelah animasi selesai
+      setTimeout(() => heart.remove(), parseFloat(fallDur) * 1000 + 200);
+    }, i * (durationMs / count));
+  }
+}
+</script>
+</body>
+</html>
